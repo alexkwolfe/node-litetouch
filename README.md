@@ -42,7 +42,7 @@ on all events, call `internalEventNotify(7)`.
 ### Switch Press, Hold and Release
 
 Clients may register a listener function to be called when any switch is pressed, held or released. The event name
-describes the particulars of the event in the following format: `<event type>:<station number>,<switch number>`.
+describes the particulars of the event in the following format: `<event type>:<station address>,<switch number>`.
 
 Example:
 

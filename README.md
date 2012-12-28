@@ -39,11 +39,7 @@ Events are emitted when the LiteTouch controller sends notifications of state ch
 by the controller, the client must use the `internalEventNotify` function to instruct the controller to send them. To turn
 on all events, call `internalEventNotify(7)`.
 
-### 'Event Notification' Events
-
-Event Notification events describe switch press, hold, and release as well as timer and user events.
-
-#### Switch Press, Hold and Release
+### Switch Press, Hold and Release
 
 Clients may register a listener function to be called when any switch is pressed, held or released. The event name
 describes the particulars of the event in the following format: `<event type>:<station number>,<switch number>`.
@@ -51,7 +47,6 @@ describes the particulars of the event in the following format: `<event type>:<s
 Example:
 
 ```javascript
-var litetouch = new LiteTouch(socket);
 liteTouch.internalEventNotify(3); // can use 2 or 7 instead
 litetouch.on('press:3,5', function() {
   console.log('Switch 5 on station 3 has been pressed');
@@ -71,7 +66,6 @@ Clients may register a listener function to be called when a timer or user event
 Example:
 
 ```javascript
-var litetouch = new LiteTouch(socket);
 liteTouch.internalEventNotify(1); // can use 2 or 7 instead
 litetouch.on('timer:1', function() {
   console.log('Timer 1 fired');
@@ -89,13 +83,12 @@ when the LED state changes.
 Example:
 
 ```javascript
-var litetouch = new LiteTouch(socket);
 liteTouch.internalEventNotify(4); // can use 2 or 7 instead
 litetouch.on('led:2', function(stateArray) {
   console.log('The LEDs on station 2 were updated');
   stateArray.forEach(function(state, i) {
     var switchNumber = i + 1;
-    console.log('LED ' + switchNumber + ' is ' + (state ? 'on' : 'off'));
+    console.log('LED ' + switchNumber + ' is now ' + (state ? 'on' : 'off'));
   });
 });
 ```
@@ -110,13 +103,12 @@ Clients may register a listener function to be called when loads change on a mod
 Example:
 
 ```javascript
-var litetouch = new LiteTouch(socket);
 liteTouch.internalEventNotify(5); // can use 2 or 7 instead
 litetouch.on('loads:2', function(levelArray) {
   console.log('The loads on module 2 were changed');
   levelArray.forEach(function(level, i) {
     var loadNumber = i + 1;
-    console.log('Load ' + loadNumber + (level ? ' is at ' + level '%' : 'was not changed'))
+    console.log('Load ' + loadNumber + (level ? ' is now at ' + level '%' : 'was not changed'))
   });
 });
 ```

@@ -345,7 +345,7 @@ class LiteTouch extends EventEmitter
     ip = args.shift()
     port = args.shift() ? 10001
 
-    socket = new Socket(fd: 'tcp4')
+    socket = new Socket(type: 'tcp4')
     lt = new LiteTouch(socket)
     socket.connect(port, ip, callback)
     lt

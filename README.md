@@ -47,7 +47,7 @@ describes the particulars of the event in the following format: `<event type>:<s
 Example:
 
 ```javascript
-liteTouch.internalEventNotify(3); // can use 2 or 7 instead
+litetouch.internalEventNotify(3); // can use 2 or 7 instead
 litetouch.on('press:3,5', function() {
   console.log('Switch 5 on station 3 has been pressed');
 });
@@ -66,7 +66,7 @@ Clients may register a listener function to be called when a timer or user event
 Example:
 
 ```javascript
-liteTouch.internalEventNotify(1); // can use 2 or 7 instead
+litetouch.internalEventNotify(1); // can use 2 or 7 instead
 litetouch.on('timer:1', function() {
   console.log('Timer 1 fired');
 });
@@ -83,7 +83,7 @@ when the LED state changes.
 Example:
 
 ```javascript
-liteTouch.internalEventNotify(4); // can use 2 or 7 instead
+litetouch.internalEventNotify(4); // can use 2 or 7 instead
 litetouch.on('led:2', function(stateArray) {
   console.log('The LEDs on station 2 were updated');
   stateArray.forEach(function(state, i) {
@@ -103,7 +103,7 @@ Clients may register a listener function to be called when loads change on a mod
 Example:
 
 ```javascript
-liteTouch.internalEventNotify(5); // can use 2 or 7 instead
+litetouch.internalEventNotify(5); // can use 2 or 7 instead
 litetouch.on('loads:2', function(levelArray) {
   console.log('The loads on module 2 were changed');
   levelArray.forEach(function(level, i) {

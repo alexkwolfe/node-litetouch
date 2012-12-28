@@ -145,8 +145,7 @@ class LiteTouch extends EventEmitter
       if typeof args[args.length - 1] == 'function'
         args.pop()
     @once cmd, (msg) -> callback(null, msg) if callback
-    out = "R,#{cmd}"
-    out = "#{out},#{args.join(',')}" if args.length > 0
+    out = ['R', cmd].concat(args).join(',')
     @socket.write("#{out}\r")
 
 
@@ -167,7 +166,7 @@ class LiteTouch extends EventEmitter
   Returns true if command is sent, otherwise false.
   ###
   internalEventNotify: (level, callback) ->
-    return callback(new Error 'level must be >=0 and <= 7') unless level >= 0 and level <= 7
+    return callback(new Error 'level must be >= 0 and <= 7') unless level >= 0 and level <= 7
     @send('SIEVN', level, callback)
 
 
@@ -185,7 +184,7 @@ class LiteTouch extends EventEmitter
   Returns true if command is sent, otherwise false.
   ###
   stationNotify: (station, level, callback) ->
-    return callback(new Error 'level must be >=0 and <= 3') unless level >= 0 and level <= 4
+    return callback(new Error 'level must be >= 0 and <= 3') unless level >= 0 and level <= 4
     @send('SSTNN', pad(station), level, callback)
 
 
@@ -200,7 +199,7 @@ class LiteTouch extends EventEmitter
   Returns true if command is sent, otherwise false.
   ###
   moduleNotify: (module, level, callback) ->
-    return callback(new Error 'level must be >=0 and <= 1') unless level >= 0 and level <= 1
+    return callback(new Error 'level must be >= 0 and <= 1') unless level >= 0 and level <= 1
     @send('SMODN', pad(module), level, callback)
 
 
@@ -329,7 +328,7 @@ class LiteTouch extends EventEmitter
   ###
   pressSwitch: (station, swtch, callback) ->
     swtch = parseInt(swtch, 10) + 1
-    return callback(new Error 'switch must be >=1 and <= 8') unless swtch >= 1 and swtch <= 8
+    return callback(new Error 'switch must be >= 1 and <= 8') unless swtch >= 1 and swtch <= 8
     @send 'CPRSW', "#{pad(station)}#{swtch - 1}", callback
 
 

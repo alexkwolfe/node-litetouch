@@ -6,6 +6,6 @@ class Socket extends EventEmitter
 
   write: (data) ->
     @data = data
-    @emit('data', "#{@response}\r")
+    @emit('data', "#{@response}\r") if @response
 
 module.exports = Socket

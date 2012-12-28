@@ -2,7 +2,7 @@ BufferStream = require('bufferstream')
 EventEmitter = require('events').EventEmitter
 Socket = require('net').Socket
 
-ack = [ 'RSACK', 'RCACK', 'RQRES' ]
+acknowlegements = [ 'RSACK', 'RCACK', 'RQRES' ]
 
 hex = (num) ->
   pad num.toString(16).toUpperCase()
@@ -21,16 +21,115 @@ class LiteTouch extends EventEmitter
       @handleMessage(message.toString('ascii'))
     @socket.on('data', @handleData)
 
+  ###
+  Internal: Handle a chunk of data sent by the LiteTouch controller by writing it to the buffer.
+  ###
   handleData: (data) =>
     @buffer.write(data.toString('ascii'))
 
+  ###
+  Internal: A message has been received and must be handled. Messages acknowledging a command or responding to
+  a query are emitted with the command as the event name and the additional payload as the event contents. Messages
+  announching an event notification, LED update, or module update are also emitted.
+
+  msg: String message sent by the LiteTouch controller.
+  ###
   handleMessage: (msg) ->
     # R,RSACK,SIEVN
     parts = msg.split(',')
     parts.shift() # R
     type = parts.shift() # ack (RSACK, RCACK, RQRES), event (REVNT), module update (RMODU), led update (RLEDU)
     cmd = parts.shift() # cmd
-    @emit(cmd, parts)
+    if type in acknowlegements
+      @emit(cmd, parts)
+    else if type == 'REVNT'
+      @handleEventNotification(cmd, parts)
+    else if type == 'RLEDU'
+      @handleLEDUpdateNotification(cmd, parts)
+    else if type == 'RMODU'
+      @handleModuleUpdateNotification(cmd, parts)
+
+  ###
+  Internal: An event notfication has been sent by the LiteTouch controller. Convert the notification into
+  an emitted event.
+
+  Switch notifications result in a press, release, or hold event for the station and switch. Switch numbers
+  are 1-based, so the first switch is numbered 1, the second is numbered 2, and so forth.
+
+  Example node.js event names for "event notifications":
+
+    press:2,5   => switch #5 on station #2 was pressed
+    release:2,5 => switch #5 on station #2 was released
+    hold:3,1    => switch #1 on station #2 was held
+  ###
+  handleEventNotification: (cmd, parts) ->
+    if cmd in ['SWP', 'SWR', 'SWH'] # switch press, hold, release
+      cmd = if cmd == 'SWP'
+        'press'
+      else if cmd == 'SWR'
+        'release'
+      else if cmd == 'SWH'
+        'hold'
+      station = parseInt(parts[0].substr(0, 3), 10)
+      button = parseInt(parts[0].substr(3, 1), 10)
+      @emit("#{cmd}:#{station},#{button}")
+    else if cmd in ['TMB', 'TME']
+      @emit("timer:#{parts[0]}")
+    else if cmd == 'USR'
+      @emit("user:#{parts[0]}")
+
+
+  ###
+  Internal: An LED update notification has been sent by the LiteTouch controller. Convert the notification
+  into an emitted event.
+
+  LED update notifications for a station result in an led event for the station with an Array of Booleans describing
+  the whether the LED of each switch is on.
+
+  Example node.js events for LED notifications:
+
+    led:5, [false,true,false,false,true,false,false,false,false,false,false,false,false,false,false] 
+      => LEDs on station 5 were updated. LEDs on switch 2 and 5 are on. 
+    
+    led:1, [true,true,false,false,false,false,false,false,false,false,false,false,false,false,false]
+      => LEDs on station 1 were updated. LEDS on switch 1 and 2 are on.
+
+  ###
+  handleLEDUpdateNotification: (cmd, parts) ->
+    station = parseInt(cmd, 10)
+    bitmap = parts.shift().split('').map (bit) -> bit == '1'
+    @emit("led:#{station}", bitmap)
+
+
+  ###
+  Internal: A module update notification has been sent by the LiteTouch controller. Convert the notification
+  into an emitted event.
+
+  Module update notification indicate that loads have changed levels (lights were dimmed, turned on or off, etc).
+  These notifications for a module result in a loads event for the module with an Array of Integers describing
+  the current percentage level of loads attached to the module.
+
+  Loads that have not changed levels are represented in the Array with a null value.
+
+  Example node.js event for a module update:
+
+    loads:5, [0,100,30,null,10,null,30,null]
+      => Load state has chnaged on module 5. Load 1 is off. Load 2, 3, 5, and 6 are at 100%, 30%, 10% and 30% respectively.
+         Load 4, 6, and 8 did not change levels.
+
+  ###
+  handleModuleUpdateNotification: (cmd, parts) ->
+    module = parseInt(cmd, 10)
+    # according to the LiteTouch RTC protocol doc, the "map" field (loads that changed) is not implemented
+    changed = parseInt(parts.shift(), 16).toString(2).split('')
+    changed = changed.map (bit) -> bit == '1'
+    levels = parts.map (level) ->
+      if level == '-1'
+        null
+      else
+        parseInt(level, 10)
+    @emit("loads:#{module}", levels)
+
 
   ###
   Internal: Send a command to the LiteTouch controller.
@@ -117,7 +216,7 @@ class LiteTouch extends EventEmitter
       return callback(err) if err
       date = msg[0]
       year = date.substr(0, 4)
-      month = parseInt(date.substr(4, 2)) - 1
+      month = parseInt(date.substr(4, 2), 10) - 1
       day = date.substr(6, 2)
       hour = date.substr(8, 2)
       minute = date.substr(10, 2)
@@ -205,7 +304,7 @@ class LiteTouch extends EventEmitter
   ###
   Public: Returns the levels of all loads on a module.
 
-  module: integer module number to query
+  module: integer module address to query
   callback: function invoked with two parameters - err if an error occurred while
             making the call, an array of objects describing the levels of each load
 
@@ -218,16 +317,37 @@ class LiteTouch extends EventEmitter
       states = parseInt(msg.shift(), 16).toString(2).split('')
       levels = for level, i in msg
         on: states[i] == '1'
-        level: parseInt(level)
+        level: parseInt(level, 10)
       callback null, levels
+
+
+  ###
+  Public: Generates a switch press.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  ###
+  pressSwitch: (station, swtch, callback) ->
+    swtch = parseInt(swtch, 10) + 1
+    return callback(new Error 'switch must be >=1 and <= 8') unless swtch >= 1 and swtch <= 8
+    @send 'CPRSW', "#{pad(station)}#{swtch - 1}", callback
+
 
   ###
   Public: Connect to the LiteTouch controller.
+
+  ip: String IP address of controller
+  port: Integer TCP port of controller (optional, defaults to 10001)
+  callback: invoked once the connection has been established (optional)
   ###
-  @create: (ip, port = 10001) ->
+  @connect: (args...) ->
+    callback = args.pop() if typeof args[args.length - 1] == 'function'
+    ip = args.shift()
+    port = args.shift() ? 10001
+
     socket = new Socket(fd: 'tcp4')
     lt = new LiteTouch(socket)
-    socket.connect(port, ip)
+    socket.connect(port, ip, callback)
     lt
 
 

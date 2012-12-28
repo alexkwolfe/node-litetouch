@@ -89,3 +89,36 @@ describe 'LiteTouch', ->
       ]
       assert.deepEqual expected, levels
       done()
+
+  it 'should press switch', (done) ->
+    socket.response = 'R,RCACK,CPRSW'
+    litetouch.pressSwitch 5, 3, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CPRSW,0053\r'
+      done()
+
+  it 'should emit switch press', (done) ->
+    litetouch.on 'press:5,3', done
+    socket.emit('data', 'R,REVNT,SWP,0053\r')
+
+  it 'should emit switch release', (done) ->
+    litetouch.on 'release:5,3', done
+    socket.emit('data', 'R,REVNT,SWR,0053\r')
+
+  it 'should emit switch hold', (done) ->
+    litetouch.on 'hold:5,3', done
+    socket.emit('data', 'R,REVNT,SWH,0053\r')
+
+  it 'should emit led update', (done) ->
+    litetouch.on 'led:10', (states) ->
+      expected = [false, false, true, false, true, true, false, false, false, false, false, false, false, false, false, false]
+      assert.deepEqual expected, states
+      done()
+    socket.emit('data', 'R,RLEDU,010,0010110000000000\r ')
+
+  it 'should emit module update', (done) ->
+    litetouch.on 'loads:32', (levels) ->
+      expected = [90, null, 0, null, 50, 0, 30, null]
+      assert.deepEqual expected, levels
+      done()
+    socket.emit('data', 'R,RMODU,0032,FF,90,-1,0,-1,50,0,30,-1\r')

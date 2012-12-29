@@ -325,11 +325,224 @@ class LiteTouch extends EventEmitter
 
   station: Integer station address
   switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
   ###
   pressSwitch: (station, swtch, callback) ->
+    @_commandSwitch('CPRSW', station, swtch, callback)
+
+
+  ###
+  Public: Generates a switch hold.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  holdSwitch: (station, swtch, callback) ->
+    @_commandSwitch('CHDSW', station, swtch, callback)
+
+
+  ###
+  Public: Generates a switch release.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  releaseSwitch: (station, swtch, callback) ->
+    @_commandSwitch('CRLSW', station, swtch, callback)
+
+
+  ###
+  Public: Generates a switch press followed by a switch release.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  toggleSwitch: (station, swtch, callback) ->
+    @_commandSwitch('CTGSW', station, swtch, callback)
+
+
+  ###
+  Public: Generates a switch press then 0.4 seconds later a hold event.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  pressHoldSwitch: (station, swtch, callback) ->
+    @_commandSwitch('CPHSW', station, swtch, callback)
+
+
+  ###
+  Public: Toggles the loads in the specified load group. If the specified group consists of multiple loads at
+  indeterminate states, all loads in the group will first be turned on. The next Toggle Loads On command will turn
+  the loads off.
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  toggleLoadsOn: (loadGroup, callback) ->
+    @send 'CTLON', pad(loadGroup), callback
+
+
+  ###
+  Public: Toggles the loads in the specified load group off. If the specified group consists of multiple loads
+  at indeterminate states, all loads in the group will first be turned off. The next ToggleLoadsOff command will turn
+  the loads on.
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  toggleLoadsOff: (loadGroup, callback) ->
+    @send 'CTLOF', pad(loadGroup), callback
+
+
+  ###
+  Public: Starts ramping the loads in the specified load group.
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  startRamp: (loadGroup, callback) ->
+    @send 'CSTRP', pad(loadGroup), callback
+
+
+  ###
+  Public: Stops ramping the loads in the specified load group and leaves them on at the present levels.
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  stopRamp: (loadGroup, callback) ->
+    @send 'CSPRP', pad(loadGroup), callback
+
+
+  ###
+  Public: Starts ramping the loads in the specified load group down to the min level
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  startRampToMin: (loadGroup, callback) ->
+    @send 'CSRMN', pad(loadGroup), callback
+
+
+  ###
+  Public: Starts ramping the loads in the specified load group up to the max level
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  startRampToMax: (loadGroup, callback) ->
+    @send 'CSRMX', pad(loadGroup), callback
+
+
+  ###
+  Public: Locks the loads in the specified load group. This makes this load group inoperable from any
+  source until it is unlocked.
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  lockLoads: (loadGroup, callback) ->
+    @send 'CLCKL', pad(loadGroup), callback
+
+
+  ###
+  Public: Unlocks the loads in the specified load group. This releases control of the load group, making it
+  operable from all sources
+
+  loadGroup: The load group number
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  unlockLoads: (loadGroup, callback) ->
+    @send 'CUNLL', pad(loadGroup), callback
+
+  ###
+  Public: Locks the specified switch making it inoperable to press, hold, or release commands until unlocked.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  lockSwitch: (station, swtch, callback) ->
+    @_commandSwitch 'CLCKS', station, swtch, callback
+
+
+  ###
+  Public: Unlocks the specified switch.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  unlockSwitch: (station, swtch, callback) ->
+    @_commandSwitch 'CUNLS', station, swtch, callback
+
+
+  ###
+  Public: Locks the timer making it inoperable until unlocked.
+
+  timer: the timer ID
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  lockTimer: (timer, callback) ->
+    @send 'CLCKT', pad(timer), callback
+
+
+  ###
+  Public: Unlocks the specified timer.
+
+  timer: the timer ID
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  unlockTimer: (timer, callback) ->
+    @send 'CUNLT', pad(timer), callback
+
+
+  ###
+  Internal: Send a switch command.
+  ###
+  _commandSwitch: (cmd, station, swtch, callback) ->
     swtch = parseInt(swtch, 10) + 1
     return callback(new Error 'switch must be >= 1 and <= 8') unless swtch >= 1 and swtch <= 8
-    @send 'CPRSW', "#{pad(station)}#{swtch - 1}", callback
+    @send cmd, "#{pad(station)}#{swtch - 1}", callback
 
 
   ###

@@ -97,6 +97,118 @@ describe 'LiteTouch', ->
       assert.equal socket.data, 'R,CPRSW,0053\r'
       done()
 
+  it 'should hold switch', (done) ->
+    socket.response = 'R,RCACK,CHDSW'
+    litetouch.holdSwitch 5, 3, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CHDSW,0053\r'
+      done()
+
+  it 'should release switch', (done) ->
+    socket.response = 'R,RCACK,CRLSW'
+    litetouch.releaseSwitch 5, 3, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CRLSW,0053\r'
+      done()
+
+  it 'should toggle switch', (done) ->
+    socket.response = 'R,RCACK,CTGSW'
+    litetouch.toggleSwitch 5, 3, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CTGSW,0053\r'
+      done()
+
+  it 'should press hold switch', (done) ->
+    socket.response = 'R,RCACK,CPHSW'
+    litetouch.pressHoldSwitch 5, 3, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CPHSW,0053\r'
+      done()
+
+  it 'should toggle loads on', (done) ->
+    socket.response = 'R,RCACK,CTLON'
+    litetouch.toggleLoadsOn 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CTLON,001\r'
+      done()
+
+  it 'should toggle loads off', (done) ->
+    socket.response = 'R,RCACK,CTLOF'
+    litetouch.toggleLoadsOff 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CTLOF,001\r'
+      done()
+
+  it 'should start ramp', (done) ->
+    socket.response = 'R,RCACK,CSTRP'
+    litetouch.startRamp 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CSTRP,001\r'
+      done()
+
+  it 'should stop ramp', (done) ->
+    socket.response = 'R,RCACK,CSPRP'
+    litetouch.stopRamp 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CSPRP,001\r'
+      done()
+
+  it 'should start ramp to min', (done) ->
+    socket.response = 'R,RCACK,CSRMN'
+    litetouch.startRampToMin 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CSRMN,001\r'
+      done()
+
+  it 'should start ramp to max', (done) ->
+    socket.response = 'R,RCACK,CSRMX'
+    litetouch.startRampToMax 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CSRMX,001\r'
+      done()
+
+  it 'should lock loads', (done) ->
+    socket.response = 'R,RCACK,CLCKL'
+    litetouch.lockLoads 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CLCKL,001\r'
+      done()
+
+  it 'should unlock loads', (done) ->
+    socket.response = 'R,RCACK,CUNLL'
+    litetouch.unlockLoads 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CUNLL,001\r'
+      done()
+
+  it 'should lock switch', (done) ->
+    socket.response = 'R,RCACK,CLCKS'
+    litetouch.lockSwitch 3, 5, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CLCKS,0035\r'
+      done()
+
+  it 'should unlock switch', (done) ->
+    socket.response = 'R,RCACK,CUNLS'
+    litetouch.unlockSwitch 3, 5, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CUNLS,0035\r'
+      done()
+
+  it 'should lock timer', (done) ->
+    socket.response = 'R,RCACK,CLCKT'
+    litetouch.lockTimer 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CLCKT,001\r'
+      done()
+
+  it 'should unlock timer', (done) ->
+    socket.response = 'R,RCACK,CUNLT'
+    litetouch.unlockTimer 1, (err) ->
+      return done(err) if err
+      assert.equal socket.data, 'R,CUNLT,001\r'
+      done()
+
   it 'should emit switch press', (done) ->
     litetouch.on 'press:5,3', done
     socket.emit('data', 'R,REVNT,SWP,0053\r')

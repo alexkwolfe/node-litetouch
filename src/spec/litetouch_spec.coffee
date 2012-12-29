@@ -210,16 +210,16 @@ describe 'LiteTouch', ->
       done()
 
   it 'should emit switch press', (done) ->
-    litetouch.on 'press:5,3', done
-    socket.emit('data', 'R,REVNT,SWP,0053\r')
+    litetouch.on 'press:12,3', done
+    socket.emit('data', 'R,REVNT,SWP,00C3\r')
 
   it 'should emit switch release', (done) ->
-    litetouch.on 'release:5,3', done
-    socket.emit('data', 'R,REVNT,SWR,0053\r')
+    litetouch.on 'release:12,3', done
+    socket.emit('data', 'R,REVNT,SWR,00C3\r')
 
   it 'should emit switch hold', (done) ->
-    litetouch.on 'hold:5,3', done
-    socket.emit('data', 'R,REVNT,SWH,0053\r')
+    litetouch.on 'hold:12,3', done
+    socket.emit('data', 'R,REVNT,SWH,00C3\r')
 
   it 'should emit led update', (done) ->
     litetouch.on 'led:10', (states) ->

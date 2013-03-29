@@ -1,5 +1,5 @@
 {
-  "name": "liteTouch",
+  "name": "litetouch",
   "description": "A driver for the LiteTouch lighting control Real Time Control protocol",
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
   "version": "0.0.3",

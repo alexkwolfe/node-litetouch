@@ -2,10 +2,13 @@ EventEmitter = require('events').EventEmitter
 
 class Socket extends EventEmitter
   constructor: ->
-    @response = null
+    @output = null
 
-  write: (data) ->
-    @data = data
-    @emit('data', "#{@response}\r") if @response
+  write: (input) ->
+    @input = input
+    @emit('readable') if @output
+
+  read: ->
+    @output if @output
 
 module.exports = Socket

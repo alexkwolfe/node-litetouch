@@ -22,14 +22,14 @@ var litetouch = LiteTouch.connect('192.168.1.5', 10001, function() {
 });
 ```
 
-You may also opt to manually set up a socket and provide it to the LiteTouch constructor directly.
+You may also provide a duplex stream to the LiteTouch constructor directly.
 
 ```javascript
 var LiteTouch = require('litetouch'),
-    Socket = require('net').Socket;
-var socket = new Socket({type: 'tcp4'});
+    net = require('net');
+
+var socket = net.createConnection({ ip: '192.168.1.5', port: 10001 })
 var litetouch = new LiteTouch(socket);
-socket.connect('192.168.1.5', 10001);
 ```
 
 
@@ -112,3 +112,12 @@ litetouch.on('loads:2', function(levelArray) {
   });
 });
 ```
+
+## Contributing
+
+Pull requests are welcome.
+
+ * Fork this repo.
+ * `git checkout -B yourbranch`
+ * Make your changes.
+ * Open a pull request between your branch and master.

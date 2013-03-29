@@ -2,7 +2,7 @@
   "name": "liteTouch",
   "description": "A driver for the LiteTouch lighting control Real Time Control protocol",
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/node-litetouch.js",
   "licenses": [{
     "type": "MIT",
@@ -13,14 +13,14 @@
     "url": "https://github.com/alexkwolfe/node-litetouch.git"
   },
   "engines": {
-    "node": ">=0.8.1"
+    "node": ">=0.10.0"
   },
   "scripts": {
     "test": "cake test",
     "prepublish": "cake build"
   },
   "dependencies": {
-    "bufferstream": ">= 0.0.0"
+    "bufferstream": ">= 0.5.1"
   },
   "devDependencies": {
     "coffee-script": ">= 1.4.0",

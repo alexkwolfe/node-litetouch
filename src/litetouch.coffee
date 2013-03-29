@@ -15,17 +15,20 @@ pad = (num) ->
 
 
 class LiteTouch extends EventEmitter
-  constructor: (@socket) ->
+  constructor: (@stream) ->
     @buffer = new BufferStream(encoding: 'utf8', size: 'flexible')
     @buffer.split '\r', (message) =>
       @handleMessage(message.toString('ascii'))
-    @socket.on('data', @handleData)
+    @readStream()
+    @stream.on('readable', @readStream)
 
   ###
   Internal: Handle a chunk of data sent by the LiteTouch controller by writing it to the buffer.
   ###
-  handleData: (data) =>
-    @buffer.write(data.toString('ascii'))
+  readStream: =>
+    data = @stream.read()
+    if data
+      @buffer.write(data.toString('ascii'))
 
   ###
   Internal: A message has been received and must be handled. Messages acknowledging a command or responding to
@@ -146,7 +149,7 @@ class LiteTouch extends EventEmitter
         args.pop()
     @once cmd, (msg) -> callback(null, msg) if callback
     out = ['R', cmd].concat(args).join(',')
-    @socket.write("#{out}\r")
+    @stream.write("#{out}\r")
 
 
   ###

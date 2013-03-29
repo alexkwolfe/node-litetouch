@@ -5,10 +5,9 @@
  */
 
 var program = require('commander')
-  , exec = require('child_process').exec
+  , sprintf = require('util').format
   , path = require('path')
   , fs = require('fs')
-  , vm = require('vm')
   , resolve = path.resolve
   , exists = fs.existsSync || path.existsSync
   , Mocha = require('../')
@@ -286,14 +285,13 @@ if (program.watch) {
     process.exit();
   });
 
-  var frames = [
-      '  \u001b[96m◜ \u001b[90mwatching\u001b[0m'
-    , '  \u001b[96m◠ \u001b[90mwatching\u001b[0m'
-    , '  \u001b[96m◝ \u001b[90mwatching\u001b[0m'
-    , '  \u001b[96m◞ \u001b[90mwatching\u001b[0m'
-    , '  \u001b[96m◡ \u001b[90mwatching\u001b[0m'
-    , '  \u001b[96m◟ \u001b[90mwatching\u001b[0m'
-  ];
+  var spinner = 'win32' == process.platform
+    ? ['|','/','-','\\']
+    : ['◜','◠','◝','◞','◡','◟'];
+
+  var frames = spinner.map(function(c) {
+    return sprintf('  \u001b[96m%s \u001b[90mwatching\u001b[0m', c);
+  });
 
   var watchFiles = utils.files(cwd);
 
@@ -417,6 +415,6 @@ function play(arr, interval) {
 
   play.timer = setInterval(function(){
     var str = arr[i++ % len];
-    process.stdout.write('\r' + str);
+    process.stdout.write('\u001b[0G' + str);
   }, interval);
 }

@@ -11,6 +11,6 @@ describe 'Callback', ->
     litetouch = new LiteTouch(socket)
 
   it 'should callback on acknowledge', (done) ->
-    socket.response = 'R,RSACK,SIEVN'
+    socket.output = 'R,RSACK,SIEVN\r'
     litetouch.send 'SIEVN', '7', -> done()
 

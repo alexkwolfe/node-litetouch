@@ -214,13 +214,37 @@ describe 'LiteTouch', ->
     socket.output = 'R,REVNT,SWP,00C3\r'
     socket.emit('readable')
 
+  it 'should emit general switch press', (done) ->
+    litetouch.on 'press', (station, button) ->
+      assert.equal 12, station
+      assert.equal 3, button
+      done()
+    socket.output = 'R,REVNT,SWP,00C3\r'
+    socket.emit('readable')
+
   it 'should emit switch release', (done) ->
     litetouch.on 'release:12,3', done
     socket.output = 'R,REVNT,SWR,00C3\r'
     socket.emit('readable')
 
+  it 'should emit general switch release', (done) ->
+    litetouch.on 'release', (station, button) ->
+      assert.equal 12, station
+      assert.equal 3, button
+      done()
+    socket.output = 'R,REVNT,SWR,00C3\r'
+    socket.emit('readable')
+
   it 'should emit switch hold', (done) ->
     litetouch.on 'hold:12,3', done
+    socket.output = 'R,REVNT,SWH,00C3\r'
+    socket.emit('readable')
+
+  it 'should emit general switch press', (done) ->
+    litetouch.on 'hold', (station, button) ->
+      assert.equal 12, station
+      assert.equal 3, button
+      done()
     socket.output = 'R,REVNT,SWH,00C3\r'
     socket.emit('readable')
 

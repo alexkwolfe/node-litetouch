@@ -76,10 +76,13 @@ class LiteTouch extends EventEmitter
       station = parseInt(parts[0].substr(0, 3), 16)
       button = parseInt(parts[0].substr(3, 1), 10)
       @emit("#{cmd}:#{station},#{button}")
+      @emit(cmd, station, button)
     else if cmd in ['TMB', 'TME']
       @emit("timer:#{parts[0]}")
+      @emit('timer', parts[0])
     else if cmd == 'USR'
       @emit("user:#{parts[0]}")
+      @emit('user', parts[0])
 
 
   ###
@@ -102,6 +105,7 @@ class LiteTouch extends EventEmitter
     station = parseInt(cmd, 10)
     bitmap = parts.shift().split('').map (bit) -> bit == '1'
     @emit("led:#{station}", bitmap)
+    @emit('led', station, bitmap)
 
 
   ###
@@ -132,6 +136,7 @@ class LiteTouch extends EventEmitter
       else
         parseInt(level, 10)
     @emit("loads:#{module}", levels)
+    @emit('loads', module, levels)
 
 
   ###

@@ -48,6 +48,8 @@ Example:
 
 ```javascript
 litetouch.internalEventNotify(3); // can use 2 or 7 instead
+
+// listen for specific button events
 litetouch.on('press:3,5', function() {
   console.log('Switch 5 on station 3 has been pressed');
 });
@@ -56,6 +58,17 @@ litetouch.on('release:3,5', function() {
 });
 litetouch.on('hold:1,2', function() {
   console.log('Switch 2 on station 1 is being held');
+});
+
+// listen to all button events, for every station and switch
+litetouch.on('press', function(station, switch) {
+  console.log('Switch ' + switch + ' on station ' + station + ' has been pressed');
+});
+litetouch.on('release', function(station, switch) {
+  console.log('Switch ' + switch + ' on station ' + station + ' has been released');
+});
+litetouch.on('hold', function(station, switch) {
+  console.log('Switch ' + switch + ' on station ' + station + ' has been held');
 });
 ```
 
@@ -67,11 +80,21 @@ Example:
 
 ```javascript
 litetouch.internalEventNotify(1); // can use 2 or 7 instead
+
+// listen to specific timer and user events
 litetouch.on('timer:1', function() {
   console.log('Timer 1 fired');
 });
 litetouch.on('user:3', function() {
   console.log('User event 3 fired');
+});
+
+// listen to all timer and user events
+litetouch.on('timer', function(id) {
+  console.log('Timer ' + id + ' fired');
+});
+litetouch.on('user', function(id) {
+  console.log('User event ' + id + ' fired');
 });
 ```
 
@@ -84,12 +107,19 @@ Example:
 
 ```javascript
 litetouch.internalEventNotify(4); // can use 2 or 7 instead
+
+// listen to LED events for a particular station
 litetouch.on('led:2', function(stateArray) {
   console.log('The LEDs on station 2 were updated');
   stateArray.forEach(function(state, i) {
     var switchNumber = i + 1;
     console.log('LED ' + switchNumber + ' is now ' + (state ? 'on' : 'off'));
   });
+});
+
+// listen to LED events for all stations
+litetouch.on('led', function(station, stateArray) {
+  console.log('The LEDs on station ' + station + ' were updated');
 });
 ```
 
@@ -104,12 +134,19 @@ Example:
 
 ```javascript
 litetouch.internalEventNotify(5); // can use 2 or 7 instead
+
+// listen to module update events for a particular module
 litetouch.on('loads:2', function(levelArray) {
   console.log('The loads on module 2 were changed');
   levelArray.forEach(function(level, i) {
     var loadNumber = i + 1;
     console.log('Load ' + loadNumber + (level ? ' is now at ' + level '%' : 'was not changed'))
   });
+});
+
+// listen to module update events for all modules
+litetouch.on('loads', function(module, levelArray) {
+  console.log('The loads on module ' + module + ' were changed');
 });
 ```
 

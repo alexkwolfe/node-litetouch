@@ -1,8 +1,8 @@
 {
   "name": "litetouch",
-  "description": "A driver for the LiteTouch lighting control Real Time Control protocol",
+  "description": "A driver for the Savant LiteTouch lighting control Real Time Control protocol",
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "main": "lib/node-litetouch.js",
   "licenses": [
     {

@@ -4,10 +4,12 @@
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
   "version": "0.0.3",
   "main": "lib/node-litetouch.js",
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://opensource.org/licenses/mit-license.php"
-  }],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/mit-license.php"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/alexkwolfe/node-litetouch.git"
@@ -20,11 +22,10 @@
     "prepublish": "cake build"
   },
   "dependencies": {
-    "bufferstream": ">= 0.5.1"
+    "split": "^0.3.0",
+    "coffee-script": "^1.8.0",
+    "mocha": "^1.21.4",
+    "chai": "^1.9.1"
   },
-  "devDependencies": {
-    "coffee-script": ">= 1.4.0",
-    "mocha": ">= 1.7.x",
-    "chai": ">= 1.4.x"
-  }
+  "devDependencies": {}
 }

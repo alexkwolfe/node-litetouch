@@ -1,5 +1,5 @@
-BufferStream = require('bufferstream')
 EventEmitter = require('events').EventEmitter
+split = require('split')
 Socket = require('net').Socket
 
 acknowlegements = [ 'RSACK', 'RCACK', 'RQRES' ]
@@ -15,20 +15,10 @@ pad = (num) ->
 
 
 class LiteTouch extends EventEmitter
-  constructor: (@stream) ->
-    @buffer = new BufferStream(encoding: 'utf8', size: 'flexible')
-    @buffer.split '\r', (message) =>
-      @handleMessage(message.toString('ascii'))
-    @readStream()
-    @stream.on('readable', @readStream)
+  constructor: (@socket) ->
+    @socket.pipe(split('\r')).on 'data', (line) =>
+      @handleMessage(line.toString('ascii'))
 
-  ###
-  Internal: Handle a chunk of data sent by the LiteTouch controller by writing it to the buffer.
-  ###
-  readStream: =>
-    data = @stream.read()
-    if data
-      @buffer.write(data.toString('ascii'))
 
   ###
   Internal: A message has been received and must be handled. Messages acknowledging a command or responding to
@@ -154,7 +144,7 @@ class LiteTouch extends EventEmitter
         args.pop()
     @once cmd, (msg) -> callback(null, msg) if callback
     out = ['R', cmd].concat(args).join(',')
-    @stream.write("#{out}\r")
+    @socket.write("#{out}\r")
 
 
   ###

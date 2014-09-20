@@ -5,23 +5,18 @@ task 'build', ->
   run './node_modules/coffee-script/bin/coffee -o lib -c src'
 
 task 'test', ->
-  run './node_modules/.bin/mocha src/spec/* --compilers coffee:coffee-script/register --reporter spec --colors'
+  run './node_modules/.bin/mocha spec/* --compilers coffee:coffee-script/register --reporter spec --colors'
 
 task 'clean', ->
   run 'rm -fr ./lib'
 
-run = (args...) ->
-  for a in args
-    switch typeof a
-      when 'string' then command = a
-      when 'object'
-        if a instanceof Array then params = a
-        else options = a
-      when 'function' then callback = a
-
-  command += ' ' + params.join ' ' if params?
-  cmd = spawn '/bin/sh', ['-c', command], options
-  cmd.stdout.on 'data', (data) -> process.stdout.write data
-  cmd.stderr.on 'data', (data) -> process.stderr.write data
-  process.on 'SIGHUP', -> cmd.kill()
-  cmd.on 'exit', (code) -> callback() if callback? and code is 0
+run = (command) ->
+  cmd = spawn '/bin/sh', ['-c', command]
+  cmd.stdout.on 'data', (data) ->
+    process.stdout.write data
+  cmd.stderr.on 'data', (data) ->
+    process.stderr.write data
+  process.on 'SIGHUP', ->
+    cmd.kill()
+  cmd.on 'exit', (code) ->
+    process.exit(code)

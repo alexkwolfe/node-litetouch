@@ -1,5 +1,5 @@
 assert = require('chai').assert
-LiteTouch = require('../litetouch')
+LiteTouch = require('../src/litetouch')
 Socket = require('./socket')
 
 describe 'Callback', ->

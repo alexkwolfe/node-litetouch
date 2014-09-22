@@ -16,6 +16,9 @@ pad = (num) ->
 
 class LiteTouch extends EventEmitter
   constructor: (@socket) ->
+    @setup()
+
+  setup: =>
     @socket.pipe(split('\r')).on 'data', (line) =>
       @handleMessage(line.toString('ascii'))
 

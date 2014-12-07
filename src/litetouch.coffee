@@ -68,8 +68,8 @@ class LiteTouch extends EventEmitter
         'hold'
       station = parseInt(parts[0].substr(0, 3), 16)
       button = parseInt(parts[0].substr(3, 1), 10)
-      @emit("#{cmd}:#{station},#{button}")
       @emit(cmd, station, button)
+      @emit("#{cmd}:#{station},#{button}")
     else if cmd in ['TMB', 'TME']
       @emit("timer:#{parts[0]}")
       @emit('timer', parts[0])

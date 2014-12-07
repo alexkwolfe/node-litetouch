@@ -223,6 +223,7 @@ class LiteTouch extends EventEmitter
       second = date.substr(12, 2)
       callback(null, new Date(year, month, day, hour, minute, second, '00'))
 
+
   ###
   Public: Sets the clock with the specified date-time.
 
@@ -272,6 +273,7 @@ class LiteTouch extends EventEmitter
       else
         callback(null, sunrise)
 
+
   ###
   Public: Returns the time sunset will occur for this day.
 
@@ -300,6 +302,33 @@ class LiteTouch extends EventEmitter
         callback(new Error('could not parse response'))
       else
         callback(null, sunset)
+
+
+  ###
+  Public: Turn a switch LED on.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  setLedOn: (station, swtch, callback) ->
+    @send('CLDON', pad(station), swtch, callback)
+
+
+  ###
+  Public: Turn a switch LED on.
+
+  station: Integer station address
+  switch: Integer switch number (one-based numbered left to right on the switch face)
+  callback: function invoked when LiteTouch acknowledges command (optional)
+
+  Returns true if command is sent, otherwise false.
+  ###
+  setLedOff: (station, swtch, callback) ->
+    @send('CLDOF', pad(station), swtch, callback)
+
 
   ###
   Public: Returns the levels of all loads on a module.

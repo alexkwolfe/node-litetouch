@@ -50,14 +50,14 @@ describe 'LiteTouch', ->
     socket.output = 'R,RCACK,CLDON\r'
     litetouch.setLedOn 12, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CLDON,012,3\r'
+      assert.equal socket.input, 'R,CLDON,0123\r'
       done()
 
   it 'should set LED off', (done) ->
     socket.output = 'R,RCACK,CLDOF\r'
     litetouch.setLedOff 12, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CLDOF,012,3\r'
+      assert.equal socket.input, 'R,CLDOF,0123\r'
       done()
 
   it 'should get sunrise', (done) ->

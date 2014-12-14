@@ -263,11 +263,11 @@ describe 'LiteTouch', ->
     socket.emit('readable')
 
   it 'should emit led update', (done) ->
-    litetouch.on 'led:10', (states) ->
+    litetouch.on 'led:11', (states) ->
       expected = [false, false, true, false, true, true, false, false, false, false, false, false, false, false, false, false]
       assert.deepEqual expected, states
       done()
-    socket.output = 'R,RLEDU,010,0010110000000000\r'
+    socket.output = 'R,RLEDU,00B,0010110000000000\r'
     socket.emit('readable')
 
   it 'should emit module update', (done) ->

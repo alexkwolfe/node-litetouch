@@ -95,7 +95,7 @@ class LiteTouch extends EventEmitter
 
   ###
   handleLEDUpdateNotification: (cmd, parts) ->
-    station = parseInt(cmd, 10)
+    station = parseInt(cmd, 16)
     bitmap = parts.shift().split('').map (bit) -> bit == '1'
     @emit("led:#{station}", bitmap)
     @emit('led', station, bitmap)

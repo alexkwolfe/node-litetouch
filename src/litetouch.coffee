@@ -67,7 +67,7 @@ class LiteTouch extends EventEmitter
       else if cmd == 'SWH'
         'hold'
       station = parseInt(parts[0].substr(0, 3), 16)
-      button = parseInt(parts[0].substr(3, 1), 10)
+      button = parseInt(parts[0].substr(3, 1), 10) + 1
       @emit(cmd, station, button)
       @emit("#{cmd}:#{station},#{button}")
     else if cmd in ['TMB', 'TME']
@@ -570,7 +570,7 @@ class LiteTouch extends EventEmitter
   Internal: Send a switch command.
   ###
   _commandSwitch: (cmd, station, swtch, callback) ->
-    swtch = parseInt(swtch, 10) + 1
+    swtch = parseInt(swtch, 10)
     return callback(new Error 'switch must be >= 1 and <= 8') unless swtch >= 1 and swtch <= 8
     @send cmd, "#{pad(station)}#{swtch - 1}", callback
 

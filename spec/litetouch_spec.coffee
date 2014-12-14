@@ -50,14 +50,14 @@ describe 'LiteTouch', ->
     socket.output = 'R,RCACK,CLDON\r'
     litetouch.setLedOn 12, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CLDON,0123\r'
+      assert.equal socket.input, 'R,CLDON,0122\r'
       done()
 
   it 'should set LED off', (done) ->
     socket.output = 'R,RCACK,CLDOF\r'
     litetouch.setLedOff 12, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CLDOF,0123\r'
+      assert.equal socket.input, 'R,CLDOF,0122\r'
       done()
 
   it 'should get sunrise', (done) ->
@@ -108,35 +108,35 @@ describe 'LiteTouch', ->
     socket.output = 'R,RCACK,CPRSW\r'
     litetouch.pressSwitch 5, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CPRSW,0053\r'
+      assert.equal socket.input, 'R,CPRSW,0052\r'
       done()
 
   it 'should hold switch', (done) ->
     socket.output = 'R,RCACK,CHDSW\r'
     litetouch.holdSwitch 5, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CHDSW,0053\r'
+      assert.equal socket.input, 'R,CHDSW,0052\r'
       done()
 
   it 'should release switch', (done) ->
     socket.output = 'R,RCACK,CRLSW\r'
     litetouch.releaseSwitch 5, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CRLSW,0053\r'
+      assert.equal socket.input, 'R,CRLSW,0052\r'
       done()
 
   it 'should toggle switch', (done) ->
     socket.output = 'R,RCACK,CTGSW\r'
     litetouch.toggleSwitch 5, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CTGSW,0053\r'
+      assert.equal socket.input, 'R,CTGSW,0052\r'
       done()
 
   it 'should press hold switch', (done) ->
     socket.output = 'R,RCACK,CPHSW\r'
     litetouch.pressHoldSwitch 5, 3, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CPHSW,0053\r'
+      assert.equal socket.input, 'R,CPHSW,0052\r'
       done()
 
   it 'should toggle loads on', (done) ->
@@ -199,14 +199,14 @@ describe 'LiteTouch', ->
     socket.output = 'R,RCACK,CLCKS\r'
     litetouch.lockSwitch 3, 5, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CLCKS,0035\r'
+      assert.equal socket.input, 'R,CLCKS,0034\r'
       done()
 
   it 'should unlock switch', (done) ->
     socket.output = 'R,RCACK,CUNLS\r'
     litetouch.unlockSwitch 3, 5, (err) ->
       return done(err) if err
-      assert.equal socket.input, 'R,CUNLS,0035\r'
+      assert.equal socket.input, 'R,CUNLS,0034\r'
       done()
 
   it 'should lock timer', (done) ->
@@ -224,40 +224,40 @@ describe 'LiteTouch', ->
       done()
 
   it 'should emit switch press', (done) ->
-    litetouch.on 'press:12,3', done
+    litetouch.on 'press:12,4', done
     socket.output = 'R,REVNT,SWP,00C3\r'
     socket.emit('readable')
 
   it 'should emit general switch press', (done) ->
     litetouch.on 'press', (station, button) ->
       assert.equal 12, station
-      assert.equal 3, button
+      assert.equal 4, button
       done()
     socket.output = 'R,REVNT,SWP,00C3\r'
     socket.emit('readable')
 
   it 'should emit switch release', (done) ->
-    litetouch.on 'release:12,3', done
+    litetouch.on 'release:12,4', done
     socket.output = 'R,REVNT,SWR,00C3\r'
     socket.emit('readable')
 
   it 'should emit general switch release', (done) ->
     litetouch.on 'release', (station, button) ->
       assert.equal 12, station
-      assert.equal 3, button
+      assert.equal 4, button
       done()
     socket.output = 'R,REVNT,SWR,00C3\r'
     socket.emit('readable')
 
   it 'should emit switch hold', (done) ->
-    litetouch.on 'hold:12,3', done
+    litetouch.on 'hold:12,4', done
     socket.output = 'R,REVNT,SWH,00C3\r'
     socket.emit('readable')
 
   it 'should emit general switch press', (done) ->
     litetouch.on 'hold', (station, button) ->
       assert.equal 12, station
-      assert.equal 3, button
+      assert.equal 4, button
       done()
     socket.output = 'R,REVNT,SWH,00C3\r'
     socket.emit('readable')

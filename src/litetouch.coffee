@@ -572,7 +572,7 @@ class LiteTouch extends EventEmitter
   _commandSwitch: (cmd, station, swtch, callback) ->
     swtch = parseInt(swtch, 10)
     return callback(new Error 'switch must be >= 1 and <= 8') unless swtch >= 1 and swtch <= 8
-    @send cmd, "#{pad(station)}#{swtch - 1}", callback
+    @send cmd, "#{hex(station)}#{swtch - 1}", callback
 
 
   ###

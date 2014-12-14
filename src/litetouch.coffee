@@ -314,7 +314,7 @@ class LiteTouch extends EventEmitter
   Returns true if command is sent, otherwise false.
   ###
   setLedOn: (station, swtch, callback) ->
-    @send('CLDON', "#{pad(station)}#{swtch}", callback)
+    @_commandSwitch('CLDON', station, swtch, callback)
 
 
   ###
@@ -327,7 +327,7 @@ class LiteTouch extends EventEmitter
   Returns true if command is sent, otherwise false.
   ###
   setLedOff: (station, swtch, callback) ->
-    @send('CLDOF', "#{pad(station)}#{swtch}", callback)
+    @_commandSwitch('CLDOF', station, swtch, callback)
 
 
   ###

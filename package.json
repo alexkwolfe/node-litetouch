@@ -2,7 +2,7 @@
   "name": "litetouch",
   "description": "A driver for the Savant LiteTouch lighting control Real Time Control protocol",
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "./index.js",
   "licenses": [
     {
